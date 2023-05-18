@@ -1,0 +1,281 @@
+
+  @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital@1&family=Roboto:ital,wght@1,300&family=Wix+Madefor+Display&display=swap');
+
+*{
+    /* font-family: 'Roboto', sans-serif; */
+/* font-family: 'Roboto Mono', monospace; */
+font-family: 'Wix Madefor Display', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+body {
+
+  
+    width: 90vw;
+    margin: auto;
+    
+}
+
+
+
+
+
+
+
+#seach {
+    display: block;
+    width: 280px;
+    margin: auto;
+    border-radius: 5px;
+    padding: 10px 5px;
+    font-size: 16px;
+    outline: none;
+}
+
+#seach:focus {
+    width: 70%;
+
+}
+
+.container {
+    display: flex;
+    flex-flow:row wrap;
+    justify-content: space-evenly;
+
+}
+
+#status1 {
+    background-color: rgb(252, 65, 65);
+    width: 100px;
+    text-align: center;
+    padding: 5px 0px;
+    border-radius: 5px;
+    /* white-space: nowrap */
+}
+
+#status2 {
+    background-color: rgb(70, 245, 70);
+    width: 100px;
+    text-align: center;
+    padding: 5px 0px;
+    border-radius: 5px;
+}
+
+#status3 {
+    background-color: orange;
+    width: 100px;
+    text-align: center;
+    padding: 5px 0px;
+    border-radius: 5px;
+}
+
+.prt-low {
+    background-color: yellow;
+    width: 100px;
+    text-align: center;
+    padding: 5px 0px;
+    border-radius: 5px;
+}
+
+.prt-medium {
+    background-color: orange;
+    width: 100px;
+    text-align: center;
+    padding: 5px 0px;
+    border-radius: 5px;
+}
+
+.prt-high {
+    background-color: red;
+    width: 100px;
+    text-align: center;
+    padding: 5px 0px;
+    border-radius: 5px;
+}
+
+.column {
+    width: 25%;
+    border-radius: 5px;
+    box-shadow: 0 2px 8px grey;
+    padding: 10px;
+    margin: 1rem 0rem;
+    border-radius: 10px;
+}
+
+.column h3 {
+font-family: 'Roboto Mono', monospace;
+
+    margin-bottom: 8px;
+    text-align: center;
+    color: rgb(142, 134, 232);
+
+}
+
+.task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+} 
+.task-list p{
+    margin: 0px;
+    text-align-last: center;
+}
+.task-list>div {
+
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    gap: 10px;
+    padding :5px;
+
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0px 0px 4px grey;
+    position: relative; 
+} 
+
+
+
+.material-icons {
+    color: rgb(142, 134, 232);
+    border: 2px solid rgb(142, 134, 232);
+    border-radius: 3px;
+    padding: 1px;
+    cursor: pointer;
+}
+
+.icon {
+    display: flex ;
+    flex-flow: row wrap;
+    gap: 40px;
+}
+
+
+
+
+/* modal starts here */
+
+.chip {
+    border-radius: 20px;
+    display: inline-block;
+    font-size: 12px;
+    margin-right: 5px;
+    padding: 2px 8px;
+}
+
+.priority {
+    background-color: #ffc107;
+    color: #333;
+}
+
+.status {
+    background-color: #17a2b8;
+    color: #fff;
+}
+
+.add-task-btn {
+    display: block;
+    margin: 20px auto;
+    width: 300px;
+    background-color: rgb(127, 94, 173);
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 10px;
+    transition: 0.4s;
+}
+
+.add-task-btn:hover {
+    background-color: white;
+    color: rgb(127, 94, 173);
+    outline: 2px solid rgb(127, 94, 173);
+    ;
+}
+
+.modal {
+    display: none;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 5px;
+    padding: 20px;
+    width: 300px;
+    max-width: 85vw;
+    outline: 2px solid grey;
+
+}
+
+.close {
+    color: #aaa;
+    cursor: pointer;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover {
+    color: #000;
+}
+
+
+form label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+
+
+form button[type="submit"] {
+    background-color: rgb(127, 94, 173);
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    padding: 10px;
+    width: 100%;
+}
+
+
+
+form input,
+select {
+    border-radius: 5px;
+    font-size: 16px;
+    margin-top: 20px;
+    padding: 10px 4px;
+    width: 100%;
+}
+
+
+
+@media screen and (max-width: 600px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .column {
+        width: 90%;
+    }
+    #seach {
+        width: 190px;
+    }
+    #seach:focus {
+        width: 250px;
+    }
+   
+    
+}
