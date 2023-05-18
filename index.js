@@ -5,11 +5,10 @@ const myBtn = document.querySelector("#add-task-btn");
 
 const formEl = document.getElementById("add-task-form");
 
-var completedHtml = document.getElementById("completed");
-var in_ProgressHtml = document.getElementById("in-progress");
-var not_startedHtml = document.getElementById("not-started");
+var complete_container = document.getElementById("completed");
+var inprogress_container = document.getElementById("in-progress");
+var notstarted_container = document.getElementById("not-started");
 
-let search = document.getElementById("seach");
 
 
 
@@ -19,28 +18,34 @@ openModalBtn.addEventListener("click", () => {
 
 closeModal.addEventListener("click", () => {
     modal.style.display = "none";
+    myBtn.innerHTML = "Add Task"
+    formEl.reset();
 });
 
 // three array to  store data
-var inProgressArr = [];
-var not_startedArr = [];
-var completedArr = [];
+var inProgress_arr = [];
+var notStarted_arr = [];
+var completed_arr = [];
+
+let taskName_El = document.getElementById("task-name");
+let priority_El = document.getElementById("priority");
+let dueDate_El = document.getElementById("due-date");
+let status_El = document.getElementById("status");
 
 myBtn.addEventListener("click", (event) => {
-    // standard code to prevent your page from reloading
+
     event.preventDefault();
-    // console.log("upper working");
 
-    const taskName = document.getElementById("task-name").value;
-    const priority = document.getElementById("priority").value;
-    const dueDate = document.getElementById("due-date").value;
-    const status = document.getElementById("status").value;
+    let taskName = taskName_El.value;
+    let priority = priority_El.value;
+    let dueDate = dueDate_El.value;
+    let status = status_El.value;
 
-    // if (dueDate == "" || priority == "" || status == "") {
-    //     alert( "All fields are mandatory to fill here with atleast 3 characters of taskName");
-    //     return;
-    // }
-    if (taskName.length == 0) {
+    if (dueDate == "" || priority == "" || status == "") {
+        alert( "All fields are mandatory to fill here.");
+        return;
+    }
+    if (taskName.length <3) {
         alert("atleast 3 characters of taskName mandatory");
         return;
     }
@@ -52,241 +57,186 @@ myBtn.addEventListener("click", (event) => {
 });
 
 
-// -----------------------------------------------------------------------------------------------------------
 //Saving the data in local storage and then SHowing the data on UI
 
 function addTask(taskName, priority, dueDate, status) {
-    console.log(status);
     if (status == "not-started") {
-        // add it in the column of not started
-        not_startedArr.push({
+        // add it in the  not started arr
+        notStarted_arr.push({
             taskName: taskName,
             priority: priority,
             dueDate: dueDate,
             status: status,
         });
-        // console.log(not_startedArr);
-        localStorage.setItem("not_startedArr", JSON.stringify(not_startedArr));
-    } else if (status == "in-progress") {
-        //   // add it in the column of in-progress
-        inProgressArr.push({
-            taskName: taskName,
-            priority: priority,
-            dueDate: dueDate,
-            status: status,
-        });
-        localStorage.setItem("inProgressArr", JSON.stringify(inProgressArr));
-    } else if (status == "completed") {
-        //   // add it in the column of completed
-        completedArr.push({
-            taskName: taskName,
-            priority: priority,
-            dueDate: dueDate,
-            status: status,
-        });
-        localStorage.setItem("completedArr", JSON.stringify(completedArr));
-    }
-    ShowingData(status);
-}
-// ------------------------------------------------------------------------------------
-// Showing the data here
 
-function ShowingData(status) {
+        localStorage.setItem("notStarted_arr", JSON.stringify(notStarted_arr));
+
+    } else if (status == "in-progress") {
+         // add it in the arr of in-progress
+        inProgress_arr.push({
+            taskName: taskName,
+            priority: priority,
+            dueDate: dueDate,
+            status: status,
+        });
+        localStorage.setItem("inProgress_arr", JSON.stringify(inProgress_arr));
+    } else if (status == "completed") {
+        // add it in the arr of completed
+        completed_arr.push({
+            taskName: taskName,
+            priority: priority,
+            dueDate: dueDate,
+            status: status,
+        });
+        localStorage.setItem("completed_arr", JSON.stringify(completed_arr));
+    }
+ showData(status);
+}
+
+
+//showDataHelperFunc the data here
+function showDataHelperFunc(container, arr) {
+    console.log(container, arr);
+
+    container.innerHTML = "";
+    arr.forEach((obj, index) => {
+        container.innerHTML += `
+                    <div id=${index} draggable="true"  ondragstart="Startdragging(event)">
+                      <p>${obj.taskName}</p>
+                      <p class=prt-${obj.priority}>${obj.priority}</p>
+                      <p>${obj.dueDate}</p>
+                      <p id="status1">${obj.status}</p>
+                      
+                      <div class="icon">
+                      <span class="material-icons" onclick="editTask(this)">edit</span>
+                      <span class="material-icons" onclick="deleteData(this)" >delete</span>
+                     </div>
+
+                    </div>
+                  `;
+    })
+}
+function showData(status) {
     if (status === "not-started") {
 
-        not_startedHtml.innerHTML = "";
-        not_startedArr.forEach((eachList, index) => {
-            // console.log(eachList.priority);
-            not_startedHtml.innerHTML += `
-                        <li id=${index} draggable="true"  ondragstart="Startdragging(event)">
-                          <p>${eachList.taskName}</p>
-                          <p id=priority1${index}>${eachList.priority}</p>
-                          <p>${eachList.dueDate}</p>
-                          <p id="status1">${eachList.status}</p>
-                          
-                          <div class="icon">
-                          <span class="material-icons" onclick="EditOneList(this)">edit</span>
-                          <span class="material-icons" onclick="DeleteOneList(this)" >delete</span>
-                         </div>
+    showDataHelperFunc(notstarted_container, notStarted_arr);
 
-                        </li>
-                      `;
+       
 
-            if (eachList.priority == "low") {
-                document.querySelector(`#priority1${index}`).style.backgroundColor =
-                    "yellow";
-            } else if (eachList.priority == "medium") {
-                document.querySelector(`#priority1${index}`).style.backgroundColor =
-                    "orange";
-            } else {
-                document.querySelector(`#priority1${index}`).style.backgroundColor =
-                    "red";
-            }
-        });
     } else if (status == "in-progress") {
-        in_ProgressHtml.innerHTML = "";
-        inProgressArr.forEach((eachList, index) => {
-            in_ProgressHtml.innerHTML += `
-      <li id=${index} draggable="true"  ondragstart="Startdragging(event)">
-      <p>${eachList.taskName}</p>
-      <p id=priority2${index}>${eachList.priority}</p>
-      <p>${eachList.dueDate}</p>
-      <p id="status2">${eachList.status}</p>
-      <div class="icon">
-                    <span class="material-icons" onclick="EditOneList(this)">edit</span>
-                    <span class="material-icons" onclick="DeleteOneList(this)" >delete</span>
-                   </div>
-      </li>
-      `;
+    showDataHelperFunc(inprogress_container, inProgress_arr);
 
-            if (eachList.priority == "low") {
-                document.querySelector(`#priority2${index}`).style.backgroundColor =
-                    "yellow";
-            } else if (eachList.priority == "medium") {
-                document.querySelector(`#priority2${index}`).style.backgroundColor =
-                    "orange";
-            } else {
-                document.querySelector(`#priority2${index}`).style.backgroundColor =
-                    "red";
-            }
-        });
+      
 
     } else if (status == "completed") {
 
-        completedHtml.innerHTML = "";
-        completedArr.forEach((eachList, index) => {
-            completedHtml.innerHTML += `<li id=${index} draggable="true"  ondragstart="Startdragging(event)">
-      <p >${eachList.taskName}</p>
-      <p id=priority3${index}>${eachList.priority}</p>
-      <p>${eachList.dueDate}</p>
-      <p id="status3">${eachList.status}</p>
-      <div class="icon">
-                    <span class="material-icons" onclick="EditOneList(this)">edit</span>
-                    <span class="material-icons" onclick="DeleteOneList(this)" >delete</span>
-                   </div>
-      </li>`;
+    showDataHelperFunc(complete_container, completed_arr);
 
-            if (eachList.priority == "low") {
-                document.querySelector(`#priority3${index}`).style.backgroundColor =
-                    "yellow";
-            } else if (eachList.priority == "medium") {
-                document.querySelector(`#priority3${index}`).style.backgroundColor =
-                    "orange";
-            } else {
-                document.querySelector(`#priority3${index}`).style.backgroundColor =
-                    "red";
-            }
-        });
+      
 
     }
-    console.log("inProgressArr", inProgressArr);
-    console.log("not_startedArr", not_startedArr);
-    console.log("completedArr", completedArr);
-    console.log("-------");
+    // console.log("inProgress_arr", inProgress_arr);
+    // console.log("notStarted_arr", notStarted_arr);
+    // console.log("completed_arr", completed_arr);
+    // console.log("-------");
 
 }
-// ------------------------------------------------------------------------------------------------
-// deleting  work here
 
-function DeleteOneList(e) {
-    // checking the status here
-    let StatusAll = e.parentElement.parentElement.children[3];
 
-    if (StatusAll.textContent === "completed") {
+
+function deleteData(e) {
+    let statusEl = e.parentElement.parentElement.children[3];
+    
+    // checking the status 
+    if (statusEl.textContent === "completed") {
         e.parentElement.parentElement.remove(); //deleting from UI
-        completedArr.splice(e.parentElement.parentElement.id, 1);
+        completed_arr.splice(e.parentElement.parentElement.id, 1);//deleting from arr
 
-        localStorage.setItem("completedArr", JSON.stringify(completedArr));
-    } else if (StatusAll.textContent == "in-progress") {
-        e.parentElement.parentElement.remove(); //deleting from UI
-        inProgressArr.splice(e.parentElement.parentElement.id, 1);
-
-        localStorage.setItem("inProgressArr", JSON.stringify(inProgressArr));
-    } else if (StatusAll.textContent == "not-started") {
+        localStorage.setItem("completed_arr", JSON.stringify(completed_arr));//set in localstorage the update one
+    } else if (statusEl.textContent == "in-progress") {
         e.parentElement.parentElement.remove();
-        not_startedArr.splice(e.parentElement.parentElement.id, 1);
-        console.log(not_startedArr);
-        localStorage.setItem("not_startedArr", JSON.stringify(not_startedArr));
+        inProgress_arr.splice(e.parentElement.parentElement.id, 1);
+
+        localStorage.setItem("inProgress_arr", JSON.stringify(inProgress_arr));
+    } else if (statusEl.textContent == "not-started") {
+        e.parentElement.parentElement.remove();
+        notStarted_arr.splice(e.parentElement.parentElement.id, 1);
+        localStorage.setItem("notStarted_arr", JSON.stringify(notStarted_arr));
     }
-    ShowingData(StatusAll.textContent);
+ showData(statusEl.textContent);
 }
-// -----------------------------------------------------------------------------------------------
+
+
 // Editing task here--->
-
-function EditOneList(e) {
-    modal.style.display = "block";
-    let statusAll = e.parentElement.parentElement.children[3];
-
-    if (statusAll.textContent == "completed") {
-        let targetList = completedArr[e.parentElement.parentElement.id];
-
-        document.getElementById("task-name").value = targetList.taskName;
-        document.getElementById("priority").value = targetList.priority;
-        document.getElementById("due-date").value = targetList.dueDate;
-        document.getElementById("status").value = targetList.status;
-    } else if (statusAll.textContent == "not-started") {
-        let targetList = not_startedArr[e.parentElement.parentElement.id];
-        document.getElementById("task-name").value = targetList.taskName;
-        document.getElementById("priority").value = targetList.priority;
-        document.getElementById("due-date").value = targetList.dueDate;
-        document.getElementById("status").value = targetList.status;
-    } else if (statusAll.textContent == "in-progress") {
-        let targetList = inProgressArr[e.parentElement.parentElement.id];
-        document.getElementById("task-name").value = targetList.taskName;
-        document.getElementById("priority").value = targetList.priority;
-        document.getElementById("due-date").value = targetList.dueDate;
-        document.getElementById("status").value = targetList.status;
-    }
-
+function editTaskHelperFunc(arr, idx, e) {
+    let obj = arr[idx];
+    taskName_El.value = obj["taskName"];
+    priority_El.value = obj["priority"]
+    dueDate_El.value = obj["dueDate"];
+    status_El.value = obj["status"];
     myBtn.onclick = function myFunc() {
 
-        if (statusAll.textContent == "completed") {
-            let targetList = completedArr[e.parentElement.parentElement.id];
-            targetList.taskName = document.getElementById("task-name").value;
-            targetList.priority = document.getElementById("priority").value;
-            targetList.dueDate = document.getElementById("due-date").value;
-            targetList.status = document.getElementById("status").value;
-            localStorage.setItem("completedArr", JSON.stringify(completedArr));
-        } else if (statusAll.textContent == "not-started") {
-            let targetList = not_startedArr[e.parentElement.parentElement.id];
-            targetList.taskName = document.getElementById("task-name").value;
-            targetList.priority = document.getElementById("priority").value;
-            targetList.dueDate = document.getElementById("due-date").value;
-            targetList.status = document.getElementById("status").value;
-            localStorage.setItem("not_startedArr", JSON.stringify(not_startedArr));
-        } else if (statusAll.textContent == "in-progress") {
-            let targetList = inProgressArr[e.parentElement.parentElement.id];
-            targetList.taskName = document.getElementById("task-name").value;
-            targetList.priority = document.getElementById("priority").value;
-            targetList.dueDate = document.getElementById("due-date").value;
-            targetList.status = document.getElementById("status").value;
-            localStorage.setItem("inProgressArr", JSON.stringify(inProgressArr));
+        obj["taskName"] = taskName_El.value
+        obj["priority"] = priority_El.value
+        obj["dueDate"] = dueDate_El.value
+        obj["status"] = status_El.value
+        // localStorage.setItem(`${arr}`, JSON.stringify(arr));
+        if (obj["status"] === "completed") {
+            localStorage.setItem("completed_arr", JSON.stringify(completed_arr));
+
+        } else if (obj["status"] === "not-started") {
+            localStorage.setItem("notStarted_arr", JSON.stringify(notStarted_arr));
+
+        } else if (obj["status"] === "in-progress") {
+            localStorage.setItem("inProgress_arr", JSON.stringify(inProgress_arr));
+
         }
-        DeleteOneList(e);
-    };
+        myBtn.innerHTML = "Add Task"
+        deleteData(e);
+    }
+}
+function editTask(e) {
+    modal.style.display = "block";
+    myBtn.innerHTML = "Edit Task"
+    let statusEl = e.parentElement.parentElement.children[3];
+    let idx = e.parentElement.parentElement.id;
+
+    if (statusEl.textContent == "completed") {
+        editTaskHelperFunc(completed_arr, idx, e)
+
+
+    } else if (statusEl.textContent == "not-started") {
+        editTaskHelperFunc(notStarted_arr, idx, e)
+
+
+    } else if (statusEl.textContent == "in-progress") {
+        editTaskHelperFunc(inProgress_arr, idx, e)
+
+
+    }
+
+
 }
 
-// --------------------------------------------------------------------------------------------------
 //--->seraching task has been done here--->
 
 function searchTask(e) {
     let enteredValue = e.value.toLowerCase();
-    let AllLiNotStarted = not_startedHtml.getElementsByTagName("li");
-    let AllLiCompleted = completedHtml.getElementsByTagName("li");
-    let AllLiInProgress = in_ProgressHtml.getElementsByTagName("li");
+    let AllLiNotStarted = notstarted_container.getElementsByTagName("li");
+    let AllLiCompleted = complete_container.getElementsByTagName("li");
+    let AllLiInProgress = inprogress_container.getElementsByTagName("li");
 
     let notStar = Array.from(AllLiNotStarted);
     let InProg = Array.from(AllLiInProgress);
     let complete = Array.from(AllLiCompleted);
 
-    let comboOfAllLis = notStar.concat(InProg, complete);
+    let all_lis = notStar.concat(InProg, complete);// li elemets of all3 containers
 
-    console.log(comboOfAllLis);
-    // searching
-    for (let i = 0; i < comboOfAllLis.length; i++) {
-    console.log(comboOfAllLis[i]);
 
-        let allParaEle = comboOfAllLis[i].getElementsByTagName("p");
+    for (let i = 0; i < all_lis.length; i++) {
+        console.log(all_lis[i]);
+
+        let allParaEle = all_lis[i].getElementsByTagName("p");
 
         let taskName = allParaEle[0].textContent.toLowerCase();
         let priority = allParaEle[1].textContent.toLowerCase();
@@ -298,51 +248,36 @@ function searchTask(e) {
             status.includes(enteredValue) ||
             dueDate.includes(enteredValue)
         ) {
-            comboOfAllLis[i].style.display = "";
+            all_lis[i].style.display = "";
         } else {
-            comboOfAllLis[i].style.display = "none";
+            all_lis[i].style.display = "none";
         }
     }
 }
-// ---------------------------------------------------------------------------------------------------------------
-//Dragging functionality embeded there
-// let draggedLiChild;
-// function Startdragging(event) {
-//   let draggedLi = event.target;
-//   draggedLiChild = draggedLi.children[1];
-//   console.log(draggedLiChild.id);
-// }
-// function allowDrop(event) {
-//   event.preventDefault();
-// }
-// function acceptDroped(event) {
-//   event.preventDefault();
 
-//   console.log(event.target);
-//   event.target.appendChild(document.getElementById(draggedLiChild));
-// }
 
 
 
 window.onload = () => {
-    not_startedArr = JSON.parse(localStorage.getItem("not_startedArr")) || [];
-    inProgressArr = JSON.parse(localStorage.getItem("inProgressArr")) || [];
-    completedArr = JSON.parse(localStorage.getItem("completedArr")) || [];
+    notStarted_arr = JSON.parse(localStorage.getItem("notStarted_arr")) || [];
+    inProgress_arr = JSON.parse(localStorage.getItem("inProgress_arr")) || [];
+    completed_arr = JSON.parse(localStorage.getItem("completed_arr")) || [];
 
-    if (inProgressArr.length != 0) {
-        ShowingData(inProgressArr[0].status);
+    if (inProgress_arr.length != 0) {
+     showData(inProgress_arr[0].status);
     }
-    if (not_startedArr.length != 0) {
-        ShowingData(not_startedArr[0].status);
+    if (notStarted_arr.length != 0) {
+     showData(notStarted_arr[0].status);
     }
-    if (completedArr.length != 0) {
-        ShowingData(completedArr[0].status);
+    if (completed_arr.length != 0) {
+     showData(completed_arr[0].status);
     }
+    // localStorage.removeItem(completed_arr);
 }
 
 
 window.onbeforeunload = (e) => {
-    localStorage.setItem("not_startedArr", JSON.stringify(not_startedArr));
-    localStorage.setItem("inProgressArr", JSON.stringify(inProgressArr));
-    localStorage.setItem("completedArr", JSON.stringify(completedArr));
+    localStorage.setItem("notStarted_arr", JSON.stringify(notStarted_arr));
+    localStorage.setItem("inProgress_arr", JSON.stringify(inProgress_arr));
+    localStorage.setItem("completed_arr", JSON.stringify(completed_arr));
 };
